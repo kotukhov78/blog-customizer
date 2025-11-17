@@ -30,33 +30,31 @@ export const ArticleParamsForm = ({
 	resetFormState,
 }: ArticleParamsFormProps) => {
 	const [isOpen, setIsOpen] = useState(false);
-	// после отладки закрыть сменив на false
 	const sidebarRef = useRef<HTMLElement>(null);
 
 	const togglePanel = () => {
 		setIsOpen(!isOpen);
 	};
 
-	const closePanel = () => {
+	const handleClose = () => {
 		setIsOpen(false);
 	};
 
-	// Обработчик клика вне сайдбара
 	useEffect(() => {
+		if (!isOpen) return;
 		const handleClickOutside = (event: MouseEvent) => {
 			if (
-				isOpen &&
 				sidebarRef.current &&
 				!sidebarRef.current.contains(event.target as Node)
 			) {
-				closePanel();
+				handleClose();
 			}
 		};
 
-		document.addEventListener('mousedown', handleClickOutside);
+		window.addEventListener('mousedown', handleClickOutside);
 
 		return () => {
-			document.removeEventListener('mousedown', handleClickOutside);
+			window.removeEventListener('mousedown', handleClickOutside);
 		};
 	}, [isOpen]);
 
@@ -111,6 +109,7 @@ export const ArticleParamsForm = ({
 		<>
 			<ArrowButton isOpen={isOpen} onClick={togglePanel} />
 			<aside
+				ref={sidebarRef}
 				className={`${styles.container} ${
 					isOpen ? styles.container_open : ''
 				}`}>
