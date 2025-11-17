@@ -32,6 +32,7 @@ const App = () => {
 	// Функция для сброса к состоянию по умолчанию
 	const resetFormState = () => {
 		setFormState(defaultArticleState);
+		setArticleState(defaultArticleState);
 	};
 
 	return (
