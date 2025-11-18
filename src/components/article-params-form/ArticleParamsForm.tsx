@@ -1,5 +1,6 @@
 import { ArrowButton } from 'src/ui/arrow-button';
 import { Button } from 'src/ui/button';
+import clsx from 'clsx';
 
 import styles from './ArticleParamsForm.module.scss';
 import { FormEvent, useEffect, useRef, useState } from 'react';
@@ -14,6 +15,7 @@ import {
 	fontColors,
 	fontFamilyOptions,
 	fontSizeOptions,
+	OptionType,
 } from 'src/constants/articleProps';
 
 interface ArticleParamsFormProps {
@@ -58,41 +60,13 @@ export const ArticleParamsForm = ({
 		};
 	}, [isOpen]);
 
-	const handleFontFamilyChange = (selected: (typeof fontFamilyOptions)[0]) => {
-		setFormState({
-			...formState,
-			fontFamilyOption: selected,
-		});
-	};
-
-	const handleFontSizeChange = (selected: (typeof fontSizeOptions)[0]) => {
-		setFormState({
-			...formState,
-			fontSizeOption: selected,
-		});
-	};
-
-	const handleFontColorChange = (selected: (typeof fontColors)[0]) => {
-		setFormState({
-			...formState,
-			fontColor: selected,
-		});
-	};
-
-	const handleBackgroundColorChange = (
-		selected: (typeof backgroundColors)[0]
-	) => {
-		setFormState({
-			...formState,
-			backgroundColor: selected,
-		});
-	};
-
-	const handleContentWidthChange = (selected: (typeof contentWidthArr)[0]) => {
-		setFormState({
-			...formState,
-			contentWidth: selected,
-		});
+	const updateFormField = (field: keyof ArticleStateType) => {
+		return (selected: OptionType) => {
+			setFormState({
+				...formState,
+				[field]: selected,
+			});
+		};
 	};
 
 	const handleSubmit = (e: FormEvent) => {
@@ -110,9 +84,7 @@ export const ArticleParamsForm = ({
 			<ArrowButton isOpen={isOpen} onClick={togglePanel} />
 			<aside
 				ref={sidebarRef}
-				className={`${styles.container} ${
-					isOpen ? styles.container_open : ''
-				}`}>
+				className={clsx(styles.container, { [styles.container_open]: isOpen })}>
 				<form
 					className={styles.form}
 					onSubmit={handleSubmit}
@@ -126,7 +98,7 @@ export const ArticleParamsForm = ({
 						title='шрифт'
 						options={fontFamilyOptions}
 						selected={formState.fontFamilyOption}
-						onChange={handleFontFamilyChange}
+						onChange={updateFormField('fontFamilyOption')}
 					/>
 					{/* размер шрифта */}
 					<RadioGroup
@@ -134,14 +106,14 @@ export const ArticleParamsForm = ({
 						options={fontSizeOptions}
 						selected={formState.fontSizeOption}
 						name='radio'
-						onChange={handleFontSizeChange}
+						onChange={updateFormField('fontSizeOption')}
 					/>
 					{/* цвет шрифта */}
 					<Select
 						title='цвет шрифта'
 						options={fontColors}
 						selected={formState.fontColor}
-						onChange={handleFontColorChange}
+						onChange={updateFormField('fontColor')}
 					/>
 					<Separator></Separator>
 					{/* цвет фона */}
@@ -149,14 +121,14 @@ export const ArticleParamsForm = ({
 						title='цвет фона'
 						options={backgroundColors}
 						selected={formState.backgroundColor}
-						onChange={handleBackgroundColorChange}
+						onChange={updateFormField('backgroundColor')}
 					/>
 					{/* ширина контента */}
 					<Select
 						title='ширина контента'
 						options={contentWidthArr}
 						selected={formState.contentWidth}
-						onChange={handleContentWidthChange}
+						onChange={updateFormField('contentWidth')}
 					/>
 					<div className={styles.bottomContainer}>
 						<Button title='Сбросить' htmlType='reset' type='clear' />
